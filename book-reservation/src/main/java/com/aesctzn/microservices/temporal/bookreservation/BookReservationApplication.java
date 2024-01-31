@@ -1,7 +1,10 @@
 package com.aesctzn.microservices.temporal.bookreservation;
 
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.TemporalConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 public class BookReservationApplication {

@@ -10,8 +10,25 @@
 		<relativePath>../microservices-parent-pom/pom.xml</relativePath>
 	</parent>
 
+	<properties>
+		<version.temporal.sdk>1.22.3</version.temporal.sdk>
+	</properties>
+
 	<artifactId>book-reservation</artifactId>
 	<name>book-reservation</name>
 	<description>Demo project for Spring Boot</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.temporal</groupId>
+			<artifactId>temporal-sdk</artifactId>
+			<version>${version.temporal.sdk}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.temporal</groupId>
+			<artifactId>temporal-testing</artifactId>
+			<version>${version.temporal.sdk}</version>
+		</dependency>
+	</dependencies>
 
 </project>
