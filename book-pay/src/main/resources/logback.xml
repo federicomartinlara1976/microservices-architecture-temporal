@@ -11,10 +11,10 @@
     </appender>
     
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    	<file>${LOG_DIR}/book-stock.log</file>
+    	<file>${LOG_DIR}/book-pay.log</file>
     	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- daily rollover -->
-      		<fileNamePattern>${LOG_DIR}/book-stock.%d{dd-MM-yyyy}.%i.log</fileNamePattern>
+      		<fileNamePattern>${LOG_DIR}/book-pay.%d{dd-MM-yyyy}.%i.log</fileNamePattern>
       		<timeBasedFileNamingAndTriggeringPolicy
           		class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
           		<!-- or whenever the file size reaches 50MB -->
@@ -52,7 +52,7 @@
                 <pattern>%m%n</pattern>
             </fullPatternLayout>
             <numbersAsString>false</numbersAsString>
-            <staticField>application:book-stock</staticField>
+            <staticField>application:book-pay</staticField>
             <staticField>environment:${ENV}</staticField>
         </encoder>
     </appender>
