@@ -3,6 +3,7 @@ package com.aesctzn.microservices.temporal.bookreservation.application;
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.ReservationsWorkflow;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.ReservationsWorkflowTemporal;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.SignalNotifications;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.WorkflowResult;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.DeductStockActivityImpl;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.PayReservationActivityImpl;
@@ -51,19 +52,19 @@ public class ReservationsService implements Reservations {
                 .setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE)
                 //.setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
                 //.setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY)
-                .setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING)
+                //.setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING)
 
                 //TIME OUT//
-                //.setWorkflowRunTimeout(Duration.ofSeconds(15))
+                .setWorkflowRunTimeout(Duration.ofMinutes(15))
                 //.setWorkflowRunTimeout(Duration.ofSeconds(5))
                 //POLITICA DE REINTENTOS//
-//                .setRetryOptions(RetryOptions.newBuilder()
-//                        .setBackoffCoefficient(2)
-//                        .setInitialInterval(Duration.ofSeconds(2))
-//                        .setMaximumAttempts(3)
-//                        .setMaximumInterval(Duration.ofSeconds(10))
-//                               .build()
-//                )
+                .setRetryOptions(RetryOptions.newBuilder()
+                        .setBackoffCoefficient(2)
+                        .setInitialInterval(Duration.ofSeconds(2))
+                        .setMaximumAttempts(3)
+                        .setMaximumInterval(Duration.ofSeconds(10))
+                               .build()
+                )
                 .build();
 
 
@@ -71,5 +72,17 @@ public class ReservationsService implements Reservations {
         WorkflowResult result = workflow.doReservation(reservation);
         log.info(result.getSummary()); ;
 
+    }
+
+    @Override
+    public void sendNotification(SignalNotifications notification) {
+        ReservationsWorkflow workflowById = workflowClient.newWorkflowStub(ReservationsWorkflow.class, notification.getReservation().getBook().getTitle());
+        workflowById.sendNotification(notification);
+    }
+
+    @Override
+    public Reservation getReservationInfo(String bookTitle) {
+        ReservationsWorkflow workflowById = workflowClient.newWorkflowStub(ReservationsWorkflow.class, bookTitle);
+        return workflowById.getReservationInfo();
     }
 }
