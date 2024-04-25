@@ -18,7 +18,7 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
                             .setStartToCloseTimeout(Duration.ofSeconds(2))
                             .build());
 
-    private final PayReservationActivity payReservationActivity=
+    private final PayReservationActivity payReservationActivity =
             Workflow.newLocalActivityStub(
                     PayReservationActivity.class,
                     LocalActivityOptions.newBuilder()
