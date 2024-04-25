@@ -45,7 +45,7 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 
         titulo = reservation.getBook().getTitle();
 
-        log.info("Ejecutando WF Reserva de libro "+ reservation.getBook().getTitle());
+        log.info("Ejecutando WF Reserva de libro " + reservation.getBook().getTitle());
 
         ActivityResult resultDeductStock = deductStockActivity.deductStock(reservation.getBook());
 
@@ -77,7 +77,7 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 
     @Override
     public void sendNotification(SignalNotifications signalNotifications) {
-        log.info("Notificación Recibida");
+        log.info("Notificación Recibida: {}", signalNotifications.toString());
         this.signalNotifications = signalNotifications;
     }
 

@@ -6,6 +6,7 @@ import io.temporal.activity.ActivityMethod;
 
 @ActivityInterface
 public interface DeductStockActivity {
-    @ActivityMethod
+    
+	@ActivityMethod
     ActivityResult deductStock(Book book);
 }

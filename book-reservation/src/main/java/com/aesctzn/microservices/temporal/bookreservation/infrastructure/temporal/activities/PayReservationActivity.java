@@ -6,6 +6,7 @@ import io.temporal.activity.ActivityMethod;
 
 @ActivityInterface
 public interface PayReservationActivity {
-    @ActivityMethod
+    
+	@ActivityMethod
     ActivityResult doPay(Reservation reservation);
 }

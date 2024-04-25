@@ -1,14 +1,13 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ActivityResult {
 
-    public ActivityResult (){
-
-    }
     private String summary;
 }

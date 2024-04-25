@@ -26,14 +26,17 @@ import java.time.Duration;
 public class ReservationsService implements Reservations {
 
     private static final String TASK_QUEUE = "booksReservations";
+    
     @Autowired
     private WorkerFactory workerFactory;
+    
     @Autowired
     private WorkflowClient workflowClient;
+    
     private WorkflowOptions build;
 
     @PostConstruct
-    public void initTemporalIntegration(){
+    public void initTemporalIntegration() {
         Worker reservationsWorkflowWorker = workerFactory.newWorker(TASK_QUEUE);
         reservationsWorkflowWorker.registerWorkflowImplementationTypes(ReservationsWorkflowTemporal.class);
         reservationsWorkflowWorker.registerActivitiesImplementations(new DeductStockActivityImpl(), new PayReservationActivityImpl());
@@ -68,7 +71,7 @@ public class ReservationsService implements Reservations {
                 .build();
 
 
-        ReservationsWorkflow workflow = workflowClient.newWorkflowStub(ReservationsWorkflow.class,workflowOptions);
+        ReservationsWorkflow workflow = workflowClient.newWorkflowStub(ReservationsWorkflow.class, workflowOptions);
         WorkflowResult result = workflow.doReservation(reservation);
         log.info(result.getSummary()); ;
 
