@@ -7,6 +7,7 @@ import io.temporal.workflow.Workflow;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
+
 @Slf4j
 public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 

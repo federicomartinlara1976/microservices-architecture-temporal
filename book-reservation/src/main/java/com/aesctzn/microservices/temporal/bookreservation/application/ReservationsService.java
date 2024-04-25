@@ -51,19 +51,19 @@ public class ReservationsService implements Reservations {
                 .setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE)
                 //.setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
                 //.setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY)
-                //.setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING)
+                .setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING)
 
                 //TIME OUT//
-                .setWorkflowRunTimeout(Duration.ofSeconds(15))
-                .setWorkflowRunTimeout(Duration.ofSeconds(5))
+                //.setWorkflowRunTimeout(Duration.ofSeconds(15))
+                //.setWorkflowRunTimeout(Duration.ofSeconds(5))
                 //POLITICA DE REINTENTOS//
-                .setRetryOptions(RetryOptions.newBuilder()
-                        .setBackoffCoefficient(2)
-                        .setInitialInterval(Duration.ofSeconds(2))
-                        .setMaximumAttempts(3)
-                        .setMaximumInterval(Duration.ofSeconds(10))
-                               .build()
-                )
+//                .setRetryOptions(RetryOptions.newBuilder()
+//                        .setBackoffCoefficient(2)
+//                        .setInitialInterval(Duration.ofSeconds(2))
+//                        .setMaximumAttempts(3)
+//                        .setMaximumInterval(Duration.ofSeconds(10))
+//                               .build()
+//                )
                 .build();
 
 
