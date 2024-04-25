@@ -24,11 +24,39 @@
 			<artifactId>temporal-sdk</artifactId>
 			<version>${version.temporal.sdk}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.temporal</groupId>
 			<artifactId>temporal-testing</artifactId>
 			<version>${version.temporal.sdk}</version>
 		</dependency>
+	
+		<!-- Graylog appender -->
+		<dependency>
+			<groupId>de.siegmar</groupId>
+			<artifactId>logback-gelf</artifactId>
+			<version>4.0.2</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<finalName>book-reservation-dev</finalName>
+			</build>
+		</profile>
+
+		<profile>
+			<id>pro</id>
+			<build>
+				<finalName>book-reservation</finalName>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
