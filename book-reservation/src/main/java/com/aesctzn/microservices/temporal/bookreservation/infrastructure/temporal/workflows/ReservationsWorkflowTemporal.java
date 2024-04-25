@@ -49,11 +49,11 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 
         ActivityResult resultDeductStock = deductStockActivity.deductStock(reservation.getBook());
 
-        result.setSummary(result.getSummary()+resultDeductStock.getSummary());
+        result.setSummary(result.getSummary() + resultDeductStock.getSummary());
 
         ActivityResult payReservationResult = payReservationActivity.doPay(reservation);
 
-        result.setSummary(result.getSummary()+" Reserva confirmada "+payReservationResult.getSummary());
+        result.setSummary(result.getSummary() + " Reserva confirmada " + payReservationResult.getSummary());
 
         //Parcial Status para consulta
         reservation.setStatus("PAY Complete. Waiting for Notification");
@@ -62,9 +62,10 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
         Workflow.await(()->signalNotifications.isSendNotification());
 
         //En funcion de la notificación podemos
-        if(signalNotifications.getSeviceName().equals("EMAIL")){
+        if(signalNotifications.getSeviceName().equals("EMAIL")) {
             log.info("Envío completado con notificación con email");
-        }else{
+        }
+        else {
             log.info("Envío completado con metodo alternativo");
         }
 
