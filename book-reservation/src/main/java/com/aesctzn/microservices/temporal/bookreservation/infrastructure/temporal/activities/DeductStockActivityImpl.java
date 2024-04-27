@@ -10,10 +10,12 @@ public class DeductStockActivityImpl implements DeductStockActivity {
 	@Override
     public ActivityResult deductStock(Book book) {
         ActivityResult activityResult = new ActivityResult();
-        
-        activityResult.setSummary("Descontando Stock para libro : " + book.getTitle());
-        
-        if (book.getId() == 10) {
+
+        log.info("Descontando Stock para libro : "+ book.getTitle());
+        activityResult.setSummary("Descontando Stock para libro : "+ book.getTitle());
+        //Simulacion de excepcion para prueba de reintetos
+        if (book.getId()==10) {
+            log.error("Simulacion de error procesando libro");
             throw new RuntimeException();
         }
 
