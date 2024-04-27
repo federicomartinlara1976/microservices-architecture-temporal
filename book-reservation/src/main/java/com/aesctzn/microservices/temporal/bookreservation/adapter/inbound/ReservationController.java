@@ -29,21 +29,18 @@ public class ReservationController {
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveBook(@RequestBody Reservation request) {
         reservationService.doReservation(request);
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
-        		.body("Reserva realizada para libro " + request.getBook().getTitle());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reserva realizada para libro +"+request.getBook().getTitle());
     }
 
     @PostMapping("/notification")
     public ResponseEntity<String> reserveBook(@RequestBody SignalNotifications notification) {
         reservationService.sendNotification(notification);
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
-        		.body("Notificación enviada para usuario y libro " + notification.getReservation().getBook().getTitle());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Notificación enviada para usuario y libro +"+notification.getReservation().getBook().getTitle());
     }
 
     @GetMapping("/info")
     public ResponseEntity<Reservation> getReservationInfo(@RequestParam("bookTitle") String bookTitle){
-        return ResponseEntity.status(HttpStatus.OK)
-        		.body(reservationService.getReservationInfo(bookTitle));
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.getReservationInfo(bookTitle));
     }
 
     private Book findBookById(Long bookId) {
