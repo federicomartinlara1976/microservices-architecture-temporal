@@ -2,7 +2,9 @@ package com.aesctzn.microservices.temporal.bookreservation.infrastructure.tempor
 
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.*;
+import io.temporal.activity.ActivityOptions;
 import io.temporal.activity.LocalActivityOptions;
+import io.temporal.common.RetryOptions;
 import io.temporal.workflow.Workflow;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,17 +14,30 @@ import java.time.Duration;
 public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 
     private final DeductStockActivity deductStockActivity =
-            Workflow.newLocalActivityStub(
+            Workflow.newActivityStub(
                     DeductStockActivity.class,
-                    LocalActivityOptions.newBuilder()
-                            .setStartToCloseTimeout(Duration.ofSeconds(2))
+                    ActivityOptions.newBuilder()
+                            .setStartToCloseTimeout(Duration.ofSeconds(60))
+                            .setScheduleToCloseTimeout(Duration.ofSeconds(50))
+                            .setScheduleToStartTimeout(Duration.ofSeconds(15))
+                            .setRetryOptions(RetryOptions.newBuilder()
+                                    .setInitialInterval(Duration.ofSeconds(5)) // Intervalo inicial entre reintentos
+                                    .setMaximumAttempts(3) // Número máximo de reintentos
+                                    .setDoNotRetry(String.valueOf(IllegalArgumentException.class)) // No volver a intentar para excepciones específicas
+                                    .build())
+                            .setHeartbeatTimeout(Duration.ofSeconds(5))
                             .build());
 
-    private final PayReservationActivity payReservationActivity =
+    private final PayReservationActivity payReservationActivity=
             Workflow.newLocalActivityStub(
                     PayReservationActivity.class,
-                    LocalActivityOptions.newBuilder()
-                            .setStartToCloseTimeout(Duration.ofSeconds(2))
+                    LocalActivityOptions.newBuilder() .setStartToCloseTimeout(Duration.ofSeconds(2))
+                            .setStartToCloseTimeout(Duration.ofHours(5))
+                            .setRetryOptions(RetryOptions.newBuilder()
+                                    .setInitialInterval(Duration.ofSeconds(5)) // Intervalo inicial entre reintentos
+                                    .setMaximumAttempts(3) // Número máximo de reintentos
+                                    .setDoNotRetry(String.valueOf(IllegalArgumentException.class)) // No volver a intentar para excepciones específicas
+                                    .build())
                             .build());
 
 
@@ -53,6 +68,8 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
         
         result.setSummary(result.getSummary() + resultDeductStock.getSummary());
 
+        result.setSummary(result.getSummary()+resultDeductStock.getSummary());
+
         ActivityResult payReservationResult = payReservationActivity.doPay(reservation);
         log.info("Result summary: {}", payReservationResult.getSummary());
 
@@ -61,9 +78,8 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
         // Parcial Status para consulta
         reservation.setStatus("PAY Complete. Waiting for Notification");
 
-        // Esperamos a señal de servicio externo envíe una notificación
-        log.info("Esperando para notificación de envío");
-        Workflow.await(()->signalNotifications.isSendNotification());
+        //Esperamos a señal de servicio externo envíe una notificación
+        //Workflow.await(()->signalNotifications.isSendNotification());
 
         // En funcion de la notificación podemos
         if(signalNotifications.getServiceName().equals("EMAIL")) {

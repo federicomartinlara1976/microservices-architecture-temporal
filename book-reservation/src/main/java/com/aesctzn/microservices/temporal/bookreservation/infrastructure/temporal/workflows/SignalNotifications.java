@@ -2,9 +2,9 @@ package com.aesctzn.microservices.temporal.bookreservation.infrastructure.tempor
 
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
 @AllArgsConstructor
