@@ -40,7 +40,8 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 
     @Override
     public WorkflowResult doReservation(Reservation reservation) {
-
+    	log.info("doReservation");
+    	
         this.reservationInfo = reservation;
 
         titulo = reservation.getBook().getTitle();
@@ -48,21 +49,24 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
         log.info("Ejecutando WF Reserva de libro " + reservation.getBook().getTitle());
 
         ActivityResult resultDeductStock = deductStockActivity.deductStock(reservation.getBook());
-
+        log.info("Result summary: {}", resultDeductStock.getSummary());
+        
         result.setSummary(result.getSummary() + resultDeductStock.getSummary());
 
         ActivityResult payReservationResult = payReservationActivity.doPay(reservation);
+        log.info("Result summary: {}", payReservationResult.getSummary());
 
         result.setSummary(result.getSummary() + " Reserva confirmada " + payReservationResult.getSummary());
 
-        //Parcial Status para consulta
+        // Parcial Status para consulta
         reservation.setStatus("PAY Complete. Waiting for Notification");
 
-        //Esperamos a señal de servicio externo envíe una notificación
+        // Esperamos a señal de servicio externo envíe una notificación
+        log.info("Esperando para notificación de envío");
         Workflow.await(()->signalNotifications.isSendNotification());
 
-        //En funcion de la notificación podemos
-        if(signalNotifications.getSeviceName().equals("EMAIL")) {
+        // En funcion de la notificación podemos
+        if(signalNotifications.getServiceName().equals("EMAIL")) {
             log.info("Envío completado con notificación con email");
         }
         else {
@@ -72,6 +76,7 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
         //Actualizacion del estado de la reserva para posterior consulta
         reservation.setStatus("PAY Complete. Notification Complete");
 
+        log.info("Flujo completado correctamente");
         return result;
     }
 

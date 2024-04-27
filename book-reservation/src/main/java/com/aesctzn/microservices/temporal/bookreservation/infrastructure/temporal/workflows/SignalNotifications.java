@@ -15,7 +15,7 @@ public class SignalNotifications {
 
     private String destinatario = "";
 
-    private String seviceName = "";
+    private String serviceName = "";
 
     private Reservation reservation;
 }

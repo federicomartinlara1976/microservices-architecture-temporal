@@ -8,7 +8,6 @@ public class PayReservationActivityImpl implements  PayReservationActivity {
     @Override
     public ActivityResult doPay(Reservation reservation) {
         ActivityResult activityResult = new ActivityResult();
-        log.info("Pago Realizado para la reserva del libro : " + reservation.getBook().getTitle());
         activityResult.setSummary("Pago realizado para el libro : " + reservation.getBook().getTitle());
         return activityResult;
     }
