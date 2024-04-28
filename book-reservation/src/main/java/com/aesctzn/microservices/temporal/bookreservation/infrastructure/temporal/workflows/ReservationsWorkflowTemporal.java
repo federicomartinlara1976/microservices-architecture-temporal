@@ -63,7 +63,7 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
     //Guardará resultados parciales del Workflow que podremos consultar
     private WorkflowResult result = new WorkflowResult();
 
-    // Se guardaŕa el parámetro de entrada de la ejecución del Workflow para que se pueda consultar si es necesario
+    // Se guardará el parámetro de entrada de la ejecución del Workflow para que se pueda consultar si es necesario
     private Reservation reservationInfo;
 
     private SignalNotifications signalNotifications = new SignalNotifications();
