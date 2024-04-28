@@ -24,7 +24,7 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
             Workflow.newActivityStub(
                     DeductStockActivity.class,
                     ActivityOptions.newBuilder()
-                            .setStartToCloseTimeout(Duration.ofSeconds(8))
+                            .setStartToCloseTimeout(Duration.ofSeconds(60))
                             .setScheduleToCloseTimeout(Duration.ofSeconds(60))
                             .setScheduleToStartTimeout(Duration.ofSeconds(15))
                             .setRetryOptions(RetryOptions.newBuilder()
@@ -32,7 +32,7 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
                                     .setMaximumAttempts(3) // Número máximo de reintentos
                                     .setDoNotRetry(String.valueOf(IllegalArgumentException.class)) // No volver a intentar para excepciones específicas
                                     .build())
-                            .setHeartbeatTimeout(Duration.ofSeconds(5))
+                            .setHeartbeatTimeout(Duration.ofSeconds(60))
                             .build());
 
     private final PayReservationActivity payReservationActivity=
@@ -71,6 +71,8 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
     private String titulo;
     private ActivityResult resultDeductStock;
 
+    private String status= "";
+
 
     @Override
     public WorkflowResult doReservation(Reservation reservation) {
@@ -82,6 +84,8 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 
         log.info("Ejecutando WF Reserva de libro " + reservation.getBook().getTitle());
 
+        status = "Ejecutandose";
+
         ActivityResult resultDeductStock = deductStockActivity.deductStock(reservation.getBook());
         log.info("Result summary: {}", resultDeductStock.getSummary());
         
@@ -92,9 +96,11 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
         ActivityResult payReservationResult = payReservationActivity.doPay(reservation);
         log.info("Result summary: {}", payReservationResult.getSummary());
 
-        result.setSummary(result.getSummary() + " Reserva confirmada " + payReservationResult.getSummary());
+        log.info("Estado status tras retomar ejecución "+status);
 
-        // Parcial Status para consulta
+        result.setSummary(result.getSummary()+" Reserva confirmada "+payReservationResult.getSummary());
+
+        //Parcial Status para consulta
         reservation.setStatus("PAY Complete. Waiting for Notification");
 
         //Esperamos a señal de servicio externo envíe una notificación
