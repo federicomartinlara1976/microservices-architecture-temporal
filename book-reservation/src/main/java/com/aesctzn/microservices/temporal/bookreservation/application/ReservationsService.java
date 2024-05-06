@@ -39,7 +39,8 @@ public class ReservationsService implements Reservations {
     @Autowired
     private WorkflowClient workflowClient;
     
-    private WorkflowOptions build;
+    @SuppressWarnings("unused")
+	private WorkflowOptions build;
 
     @PostConstruct
     public void initTemporalIntegration() {
@@ -103,14 +104,16 @@ public class ReservationsService implements Reservations {
             return context;
         }
 
-        public void setCurrentContext(Object context) {
+        @SuppressWarnings("unchecked")
+		public void setCurrentContext(Object context) {
             Map<String, String> contextMap = (Map<String, String>) context;
             for (Map.Entry<String, String> entry : contextMap.entrySet()) {
                 MDC.put(entry.getKey(), entry.getValue());
             }
         }
 
-        public Map<String, Payload> serializeContext(Object context) {
+        @SuppressWarnings({ "unchecked", "deprecation" })
+		public Map<String, Payload> serializeContext(Object context) {
             Map<String, String> contextMap = (Map<String, String>) context;
             Map<String, Payload> serializedContext = new HashMap<>();
             for (Map.Entry<String, String> entry : contextMap.entrySet()) {
@@ -119,7 +122,8 @@ public class ReservationsService implements Reservations {
             return serializedContext;
         }
 
-        public Object deserializeContext(Map<String, Payload> context) {
+        @SuppressWarnings("deprecation")
+		public Object deserializeContext(Map<String, Payload> context) {
             Map<String, String> contextMap = new HashMap<>();
             for (Map.Entry<String, Payload> entry : context.entrySet()) {
                 contextMap.put(entry.getKey(), DataConverter.getDefaultInstance().fromPayload(entry.getValue(), String.class, String.class));

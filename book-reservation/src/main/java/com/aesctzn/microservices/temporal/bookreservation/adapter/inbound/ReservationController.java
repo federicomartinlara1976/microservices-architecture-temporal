@@ -88,7 +88,8 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(historicalService.getHistoryExecutionsResponse(queryExecutionsDto).toString());
     }
 
-    private Book findBookById(Long bookId) {
+    @SuppressWarnings("unused")
+	private Book findBookById(Long bookId) {
         return new Book();
     }
 }
