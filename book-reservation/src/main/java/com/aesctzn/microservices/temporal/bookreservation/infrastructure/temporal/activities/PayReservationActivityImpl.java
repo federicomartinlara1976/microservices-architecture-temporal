@@ -1,8 +1,8 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities;
 
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
+
 import io.temporal.activity.Activity;
-import io.temporal.activity.ActivityExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
