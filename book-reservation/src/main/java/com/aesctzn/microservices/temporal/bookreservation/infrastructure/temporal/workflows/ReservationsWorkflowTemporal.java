@@ -1,22 +1,21 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.ActivityResult;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.DeductStockActivity;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.NotificationsActivity;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.PayReservationActivity;
-
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.*;
 import io.temporal.activity.ActivityOptions;
+import io.temporal.activity.LocalActivityOptions;
+import io.temporal.api.common.v1.WorkflowExecution;
 import io.temporal.common.RetryOptions;
 import io.temporal.workflow.Async;
 import io.temporal.workflow.Promise;
 import io.temporal.workflow.Workflow;
+import io.temporal.workflow.WorkflowInfo;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 public class ReservationsWorkflowTemporal implements ReservationsWorkflow {

@@ -1,5 +1,7 @@
 package com.aesctzn.microservices.temporal.bookreservation.application;
 
+import com.aesctzn.microservices.temporal.bookreservation.application.ManagementBookPay;
+import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
