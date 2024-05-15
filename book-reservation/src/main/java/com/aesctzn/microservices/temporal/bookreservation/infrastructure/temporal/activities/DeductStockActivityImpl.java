@@ -3,11 +3,12 @@ package com.aesctzn.microservices.temporal.bookreservation.infrastructure.tempor
 import com.aesctzn.microservices.temporal.bookreservation.domain.Book;
 import io.temporal.activity.Activity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+@Service
 @Slf4j
 public class DeductStockActivityImpl implements DeductStockActivity {
-    
-	@Override
+    @Override
     public ActivityResult deductStock(Book book) {
         ActivityResult activityResult = new ActivityResult();
 
@@ -36,5 +37,10 @@ public class DeductStockActivityImpl implements DeductStockActivity {
         }
 
         return activityResult;
+    }
+
+    @Override
+    public void compensateStock(Book book) {
+        log.info("Ejecutando compensacion de deducción de stock de libro : "+book.getTitle());
     }
 }

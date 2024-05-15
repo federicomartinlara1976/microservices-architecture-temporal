@@ -1,15 +1,23 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities;
 
+import com.aesctzn.microservices.temporal.bookreservation.domain.Book;
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
-
 import io.temporal.activity.Activity;
+import io.temporal.activity.ActivityExecutionContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+@Service
 @Slf4j
 public class PayReservationActivityImpl implements  PayReservationActivity {
     @Override
     public ActivityResult doPay(Reservation reservation) {
         //No se marcará a complete de forma automática
+        if (reservation.getBook().getId()==11) {
+            log.error("Simulacion de error pagando libro");
+            throw new RuntimeException();
+        }
+
         Activity.getExecutionContext().useLocalManualCompletion();
         ActivityResult activityResult = new ActivityResult();
         log.info("Inicializando pago");
@@ -40,5 +48,10 @@ public class PayReservationActivityImpl implements  PayReservationActivity {
         log.info("Activity Token :" + Activity.getExecutionContext().getTaskToken());
 
         return activityResult;
+    }
+
+    @Override
+    public void compensatePay(Book book) {
+        log.info("Ejecutando compensación de pago de libro :"+book.getTitle());
     }
 }

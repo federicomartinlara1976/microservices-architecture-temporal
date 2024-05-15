@@ -1,16 +1,16 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows;
 
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.*;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.ActivityResult;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.DeductStockActivity;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.NotificationsActivity;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.PayReservationActivity;
 import io.temporal.activity.ActivityOptions;
-import io.temporal.activity.LocalActivityOptions;
-import io.temporal.api.common.v1.WorkflowExecution;
 import io.temporal.common.RetryOptions;
-import io.temporal.spring.boot.WorkflowImpl;
 import io.temporal.workflow.Async;
 import io.temporal.workflow.Promise;
+import io.temporal.workflow.Saga;
 import io.temporal.workflow.Workflow;
-import io.temporal.workflow.WorkflowInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-@WorkflowImpl(taskQueues = "booksReservations")
-public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
+public class ReservationsWorkflowTemporalSaga implements ReservationsWorkflow {
 
     private final DeductStockActivity deductStockActivity =
             Workflow.newActivityStub(
@@ -70,12 +69,8 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
 
     private SignalNotifications signalNotifications = new SignalNotifications();
 
-    @SuppressWarnings("unused")
-	private String titulo;
-    
-    
-    @SuppressWarnings("unused")
-	private ActivityResult resultDeductStock;
+    private String titulo;
+    private ActivityResult resultDeductStock;
 
     private String status= "";
 
@@ -83,53 +78,31 @@ public class ReservationsWorkflowTemporal implements ReservationsWorkflow {
     @Override
     public WorkflowResult doReservation(Reservation reservation)  {
 
-        this.reservationInfo = reservation;
+        Saga saga = new Saga(new Saga.Options.Builder().setParallelCompensation(false).build());
+        try {
+            saga.addCompensation(deductStockActivity::compensateStock, reservation.getBook());
+            deductStockActivity.deductStock(reservation.getBook());
+            saga.addCompensation(payReservationActivity::compensatePay, reservation.getBook());
+            payReservationActivity.doPay(reservation);
 
-        titulo = reservation.getBook().getTitle();
+            List<String> notifications = Arrays.asList("Antonio","Jose","Pepe","Luis","Ricardo","Andres","Gema","Pilar","Clara");
+            List<Promise<String>> promiseList = new ArrayList<>();
+            notifications.stream().forEach(p -> promiseList.add(Async.function(notificationsActivity::sendNotifications,"Hola Reserva Completada "+p)));
 
-        log.info("Ejecutando WF Reserva de libro "+ reservation.getBook().getTitle());
+            //Ejecución de todas las tareas concurrentes y esperar a que teminen
+            Promise.allOf(promiseList).get();
 
-        status = "Ejecutandose";
 
-        ActivityResult resultDeductStock = deductStockActivity.deductStock(reservation.getBook());
+        }catch (Exception e){
+            log.info("Tratamiento de errores ");
+            saga.compensate();
+            List<String> notifications = Arrays.asList("Antonio","Jose","Pepe","Luis","Ricardo","Andres","Gema","Pilar","Clara");
+            List<Promise<String>> promiseList = new ArrayList<>();
+            notifications.stream().forEach(p -> promiseList.add(Async.function(notificationsActivity::sendNotifications,"Reserva no procesada "+p)));
 
-        result.setSummary(result.getSummary()+resultDeductStock.getSummary());
-
-        ActivityResult payReservationResult = payReservationActivity.doPay(reservation);
-
-        log.info("Estado status tras retomar ejecución "+status);
-
-        result.setSummary(result.getSummary()+" Reserva confirmada "+payReservationResult.getSummary());
-
-        //Parcial Status para consulta
-        reservation.setStatus("PAY Complete. Waiting for Notification");
-
-        //Esperamos a señal de servicio externo envíe una notificación
-        //Workflow.await(()->signalNotifications.isSendNotification());
-
-        //En funcion de la notificación podemos
-        if(signalNotifications.getSeviceName().equals("EMAIL")){
-            log.info("Envío completado con notificación con email");
-        }else{
-            log.info("Envío completado con metodo alternativo");
+            //Ejecución de todas las tareas concurrentes y esperar a que teminen
+            Promise.allOf(promiseList).get();
         }
-
-        //Actualizacion del estado de la reserva para posterior consulta
-        reservation.setStatus("PAY Complete. Notification Complete");
-
-        //Ejecución paralela de actitidades
-        List<String> notifications = Arrays.asList("Antonio","Jose","Pepe","Luis","Ricardo","Andres","Gema","Pilar","Clara");
-        List<Promise<String>> promiseList = new ArrayList<>();
-        notifications.stream().forEach(p -> promiseList.add(Async.function(notificationsActivity::sendNotifications,"Hola "+p)));
-
-        //Ejecución de todas las tareas concurrentes y esperar a que teminen
-        Promise.allOf(promiseList).get();
-
-        promiseList.stream().forEach(p -> log.info("Imprimiendo resultado de las notificaciones"));
-
-        //Ejecución secuencia de tareas3
-        //notifications.stream().forEach(p->notificationsActivity.sendNotifications(p));
-
 
         return result;
     }
