@@ -1,39 +1,38 @@
 package com.aesctzn.microservices.starter.temporal.services;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.aesctzn.microservices.starter.temporal.interfaces.TemporalManagement;
 import com.aesctzn.microservices.starter.temporal.services.historical.HistoricalService;
 import com.aesctzn.microservices.starter.temporal.services.namespaces.NamespaceManagement;
-import io.temporal.api.common.v1.Payload;
+
 import io.temporal.api.enums.v1.WorkflowIdReusePolicy;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
 import io.temporal.common.RetryOptions;
-import io.temporal.common.context.ContextPropagator;
-import io.temporal.common.converter.DataConverter;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import lombok.Getter;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class TemporalManagementImpl implements TemporalManagement {
 
-    @Autowired
+    @SuppressWarnings("unused")
+	@Autowired
     private NamespaceManagement namespaceManagement;
 
     @Autowired
     @Getter
     HistoricalService historicalService;
 
-    @Autowired
+    @SuppressWarnings("unused")
+	@Autowired
     private WorkflowServiceStubs serviceStubs;
 
     @Autowired
