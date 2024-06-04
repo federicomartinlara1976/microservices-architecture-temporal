@@ -94,7 +94,8 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.OK).body("Saludo enviado");
     }
 
-    private Book findBookById(Long bookId) {
+    @SuppressWarnings("unused")
+	private Book findBookById(Long bookId) {
         return new Book();
     }
 }

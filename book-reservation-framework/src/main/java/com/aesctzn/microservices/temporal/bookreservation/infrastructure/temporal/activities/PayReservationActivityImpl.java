@@ -1,11 +1,12 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities;
 
+import org.springframework.stereotype.Component;
+
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
+
 import io.temporal.activity.Activity;
-import io.temporal.activity.ActivityExecutionContext;
 import io.temporal.spring.boot.ActivityImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component

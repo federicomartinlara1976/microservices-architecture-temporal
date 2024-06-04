@@ -1,10 +1,21 @@
 package com.aesctzn.microservices.temporal.bookreservation.application;
 
+import java.time.Duration;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.NotificationsActivityImpl;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.*;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.DeductStockActivityImpl;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.PayReservationActivityImpl;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.HelloWorkflow;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.ReservationsWorkflow;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.SignalNotifications;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.WorkflowResult;
+
 import io.temporal.api.common.v1.Payload;
 import io.temporal.api.enums.v1.WorkflowIdReusePolicy;
 import io.temporal.client.WorkflowClient;
@@ -12,17 +23,7 @@ import io.temporal.client.WorkflowOptions;
 import io.temporal.common.RetryOptions;
 import io.temporal.common.context.ContextPropagator;
 import io.temporal.common.converter.DataConverter;
-import io.temporal.worker.Worker;
-import io.temporal.worker.WorkerFactory;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.*;
 
 @Service
 @Slf4j
@@ -86,14 +87,16 @@ public class ReservationsService implements Reservations {
             return context;
         }
 
-        public void setCurrentContext(Object context) {
+        @SuppressWarnings("unchecked")
+		public void setCurrentContext(Object context) {
             Map<String, String> contextMap = (Map<String, String>) context;
             for (Map.Entry<String, String> entry : contextMap.entrySet()) {
                 MDC.put(entry.getKey(), entry.getValue());
             }
         }
 
-        public Map<String, Payload> serializeContext(Object context) {
+        @SuppressWarnings({ "unchecked", "deprecation" })
+		public Map<String, Payload> serializeContext(Object context) {
             Map<String, String> contextMap = (Map<String, String>) context;
             Map<String, Payload> serializedContext = new HashMap<>();
             for (Map.Entry<String, String> entry : contextMap.entrySet()) {
@@ -102,7 +105,8 @@ public class ReservationsService implements Reservations {
             return serializedContext;
         }
 
-        public Object deserializeContext(Map<String, Payload> context) {
+        @SuppressWarnings("deprecation")
+		public Object deserializeContext(Map<String, Payload> context) {
             Map<String, String> contextMap = new HashMap<>();
             for (Map.Entry<String, Payload> entry : context.entrySet()) {
                 contextMap.put(entry.getKey(), DataConverter.getDefaultInstance().fromPayload(entry.getValue(), String.class, String.class));
