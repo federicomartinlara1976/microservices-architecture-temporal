@@ -1,16 +1,20 @@
 package com.aesctzn.microservices.starter.temporal.services.namespaces;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import com.google.protobuf.Duration;
 
 @Getter
 @Setter
 public class NamespaceRegisterDto implements Serializable  {
 
-    private String name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -484806242347395080L;
+	
+	private String name;
     private String description;
     private int retention;
     private String emailOwner;
