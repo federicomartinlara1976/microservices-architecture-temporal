@@ -1,21 +1,14 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows;
 
-import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.*;
+import java.time.Duration;
+
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.HelloActivity;
+
 import io.temporal.activity.ActivityOptions;
 import io.temporal.common.RetryOptions;
 import io.temporal.spring.boot.WorkflowImpl;
-import io.temporal.workflow.Async;
-import io.temporal.workflow.Promise;
 import io.temporal.workflow.Workflow;
-import lombok.extern.slf4j.Slf4j;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-@Slf4j
 @WorkflowImpl(taskQueues = "helloQueue")
 public class HelloWorkflowTemporal implements HelloWorkflow {
 

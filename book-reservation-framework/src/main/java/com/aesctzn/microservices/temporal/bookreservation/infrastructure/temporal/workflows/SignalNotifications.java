@@ -1,7 +1,7 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows;
 
-import com.aesctzn.microservices.temporal.bookreservation.domain.Book;
 import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
+
 import lombok.Getter;
 import lombok.Setter;
 
