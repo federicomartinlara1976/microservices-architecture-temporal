@@ -67,12 +67,16 @@ public class ReservationsWorkflowTemporalSaga implements ReservationsWorkflow {
     // Se guardaŕa el parámetro de entrada de la ejecución del Workflow para que se pueda consultar si es necesario
     private Reservation reservationInfo;
 
-    private SignalNotifications signalNotifications = new SignalNotifications();
+    @SuppressWarnings("unused")
+	private SignalNotifications signalNotifications = new SignalNotifications();
 
-    private String titulo;
-    private ActivityResult resultDeductStock;
+    @SuppressWarnings("unused")
+	private String titulo;
+    @SuppressWarnings("unused")
+	private ActivityResult resultDeductStock;
 
-    private String status= "";
+    @SuppressWarnings("unused")
+	private String status= "";
 
 
     @Override

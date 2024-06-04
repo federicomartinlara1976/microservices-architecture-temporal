@@ -18,7 +18,8 @@ import static java.time.LocalTime.now;
 @Service
 public class ReservationSchedulerService {
 
-    @Autowired
+    @SuppressWarnings("unused")
+	@Autowired
     private TemporalManagement temporalManagement;
 
     static final String SCHEDULE_ID = "BookReservationsProcessSchedule";

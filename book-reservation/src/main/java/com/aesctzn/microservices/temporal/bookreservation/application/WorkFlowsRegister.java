@@ -1,5 +1,9 @@
 package com.aesctzn.microservices.temporal.bookreservation.application;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.aesctzn.microservices.starter.temporal.interfaces.TemporalManagement;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.DeductStockActivity;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.LotCreationActivity;
@@ -8,14 +12,10 @@ import com.aesctzn.microservices.temporal.bookreservation.infrastructure.tempora
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.ReservationsWorkflowTemporalSaga;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.SchedulerReservationsBillingWorkflowImpl;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.childs.ReservationProcessActivity;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.childs.ReservationProcessWorkflow;
 import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.childs.ReservationProcessWorkflowImpl;
+
 import io.temporal.client.schedules.ScheduleClient;
 import io.temporal.serviceclient.WorkflowServiceStubs;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class WorkFlowsRegister {

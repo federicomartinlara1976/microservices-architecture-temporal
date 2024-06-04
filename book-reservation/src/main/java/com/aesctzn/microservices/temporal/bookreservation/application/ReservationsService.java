@@ -1,27 +1,21 @@
 package com.aesctzn.microservices.temporal.bookreservation.application;
 
-import com.aesctzn.microservices.starter.temporal.interfaces.TemporalManagement;
-import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.*;
-import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.*;
-import io.temporal.api.common.v1.Payload;
-import io.temporal.api.enums.v1.WorkflowIdReusePolicy;
-import io.temporal.client.WorkflowClient;
-import io.temporal.client.WorkflowOptions;
-import io.temporal.common.RetryOptions;
-import io.temporal.common.context.ContextPropagator;
-import io.temporal.common.converter.DataConverter;
-import io.temporal.worker.Worker;
-import io.temporal.worker.WorkerFactory;
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.*;
+import com.aesctzn.microservices.starter.temporal.interfaces.TemporalManagement;
+import com.aesctzn.microservices.temporal.bookreservation.domain.Reservation;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.DeductStockActivity;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.NotificationsActivity;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities.PayReservationActivity;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.ReservationsWorkflow;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.ReservationsWorkflowTemporalSaga;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.SignalNotifications;
+import com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.workflows.WorkflowResult;
+
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j

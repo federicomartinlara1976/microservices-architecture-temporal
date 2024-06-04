@@ -1,8 +1,8 @@
 package com.aesctzn.microservices.temporal.bookreservation.infrastructure.temporal.activities;
 
-import com.aesctzn.microservices.temporal.bookreservation.domain.Book;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
